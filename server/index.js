@@ -1,11 +1,14 @@
-const express=require('express');
-const app=express();
+const express = require('express');
+const app = express();
+require('dotenv').config();
 
-app.use('/',require('./routes'));
-app.listen(5000, (err)=>{
-    if(err) 
-    console.log('error while starting server');
-    else
-  console.log("server started at http://localhost:5000");
-}
-);
+app.use('/', require('./routes'));
+
+
+const port = process.env.PORT || 8000;
+app.listen(port, (err) => {
+  if (err)
+    console.log(`Error while starting server.`);
+  else
+    console.log(`Server started at http://localhost:${port}`);
+});

@@ -1,6 +1,6 @@
-module.exports.home= (req,res)=>{
+module.exports.home = (req, res) => {
     console.log("home called");
-res.json({
-    colour:"red"
-})
+    res.json({
+        colour: "red"
+    });
 }
