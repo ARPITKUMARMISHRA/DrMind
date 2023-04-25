@@ -42,7 +42,7 @@ export default function Signin() {
       email: email,
       password: password
     }
-    let res = await fetch('https://localhost:8001/auth/createSession', {
+    let res = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/createSession`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

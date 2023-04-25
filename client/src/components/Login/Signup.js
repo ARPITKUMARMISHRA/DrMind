@@ -54,7 +54,7 @@ export default function Signup() {
             password: password,
             confirm_password: password2,
         }
-        let res = await fetch('https://localhost:8001/auth/create', {
+        let res = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/create`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -72,8 +72,9 @@ export default function Signup() {
     }
 
     const shouldEnable = () => {
-        if (name !== '' && password !== '' && password2 !== '' && email.match("[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}"))
+        if (name !== '' && password !== '' && password2 !== '' && email.match("[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}")) {
             return true;
+        }
         else
             return false;
     }
@@ -128,6 +129,8 @@ export default function Signup() {
                                     required
                                     fullWidth
                                     name="password"
+                                    value={password}
+                                    onChange={handlePassword}
                                     label="Password"
                                     type="password"
                                     id="password"

@@ -1,10 +1,40 @@
-const express = require('express');
-const app = express();
+const fs = require('fs');
 require('dotenv').config();
 
+// Server related
+const express = require('express');
+const app = express();
+
+// Body parsing
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+// Database
+const mongoose = require('mongoose');
+const db = require('./config/mongoose');
+
+const cors = require('cors');
+
+
+/*====================================================================================================================================*/
+
+// Allowing Cors
+app.use(cors({
+  origin: process.env.CLIENT_URL
+}));
+
+// Parsing the Body {application/json  and  application/x-www-form-urlencoded}
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+// Parsing the Cookies
+app.use(cookieParser());
+
+
+// Using Routes
 app.use('/', require('./routes'));
 
 
+// Listening to the port
 const port = process.env.PORT || 8000;
 app.listen(port, (err) => {
   if (err)

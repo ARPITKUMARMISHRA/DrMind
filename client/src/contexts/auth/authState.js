@@ -10,7 +10,7 @@ const userExists = async (setLogin) => {
             if (token == null)
                 return false;
             else {
-                let res = await fetch(`https://localhost:8001/auth/exists`, {
+                let res = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/exists`, {
                     method: 'POST',
                     body: JSON.stringify({ 'auth-token': token }),
                     headers: {
