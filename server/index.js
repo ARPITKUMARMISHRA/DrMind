@@ -20,7 +20,8 @@ const cors = require('cors');
 
 // Allowing Cors
 app.use(cors({
-  origin: process.env.CLIENT_URL
+  origin: process.env.CLIENT_URL,
+  credentials: true
 }));
 
 // Parsing the Body {application/json  and  application/x-www-form-urlencoded}

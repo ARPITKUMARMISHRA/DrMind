@@ -1,6 +1,5 @@
 import { React, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToken, setToken, removeToken } from '../../hooks/authToken';
 import AuthContext from '../../contexts/auth/authContext';
 
 import Avatar from '@mui/material/Avatar';
@@ -47,11 +46,10 @@ export default function Signin() {
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      credentials: 'include'
     });
-    let result = await res.json();
-    if (res.status === 200 && result['auth-token']) {
-      setToken('auth-token', result['auth-token']);  //storing jwt token in local storage
+    if (res.status === 200) {
       setLogin(true);
       nav('/');
     } else {

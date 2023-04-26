@@ -1,35 +1,27 @@
 import { React, useEffect, useState } from "react";
 import AuthContext from "./authContext";
-import { getToken, setToken, removeToken } from "../../hooks/authToken";
 
 
 const userExists = async (setLogin) => {
     const exists = await (async function () {
         try {
-            const token = getToken('auth-token');
-            if (token == null)
+            let res = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/exists`, {
+                method: 'POST',
+                body: '',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            if (res.status === 200)
+                return true;
+            else
                 return false;
-            else {
-                let res = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/exists`, {
-                    method: 'POST',
-                    body: JSON.stringify({ 'auth-token': token }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (res.status === 200)
-                    return true;
-                else
-                    return false;
-            }
         } catch (err) {
             console.log('Error occured while verifying user');
             return false;
         }
     })();
-    if (!exists) {
-        removeToken('auth-token');
-    }
     setLogin(exists);
 }
 

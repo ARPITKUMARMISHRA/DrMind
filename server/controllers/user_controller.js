@@ -41,7 +41,8 @@ module.exports.create = async function (req, res) {
                             }
                         };
                         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
-                        return res.status(200).json({ 'auth-token': authtoken });
+                        res.cookie('auth-token', authtoken);
+                        return res.status(200).json({});
                     })
                     .catch((err) => {
                         // req.flash('error', 'Error while creating account');
@@ -80,7 +81,8 @@ module.exports.createSession = function (req, res) {
                     }
                 };
                 const authtoken = jwt.sign(data, process.env.JWT_SECRET);
-                return res.status(200).json({ 'auth-token': authtoken });
+                res.cookie('auth-token', authtoken);
+                return res.status(200).json({});
             }
         })
         .catch((err) => {
@@ -143,9 +145,9 @@ async function verifyPassword(password) {
 
 // Check if user still exists or not
 module.exports.exists = async (req, res) => {
-    const token = req.body['auth-token'];
+    const token = req.cookies['auth-token'];
     if (!token) {
-        res.status(401).json({});
+        return res.status(401).json({});
     }
     try {
         const data = jwt.verify(token, process.env.JWT_SECRET);
@@ -153,11 +155,26 @@ module.exports.exists = async (req, res) => {
             const user = await User.findById(data.user.id);
             if (user)
                 return res.status(200).json({});
-            else
+            else {
+                res.cookie('auth-token', '', { expires: Date.now() });
                 return res.status(403).json({});
+            }
         }
-        else
+        else {
+            res.cookie('auth-token', '', { expires: Date.now() });
             return res.status(403).json({});
+        }
+    } catch (err) {
+        res.cookie('auth-token', '', { expires: new Date() });
+        res.status(500).json({});
+    }
+}
+
+
+module.exports.logout = async () => {
+    try {
+        res.cookie('auth-token', '', { expires: Date.now() });
+        return res.status(200).json({});
     } catch (err) {
         res.status(500).json({});
     }
