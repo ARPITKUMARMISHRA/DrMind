@@ -7,6 +7,7 @@ import Signin from './components/Login/Signin';
 import Signup from './components/Login/Signup';
 import Map from './components/Maps/Map';
 import NotFound from './components/Errors/NotFound';
+import Chatbot from './components/Chatbot/Chatbot';
 import { socket } from './socket';
 
 function App() {
@@ -27,7 +28,10 @@ function App() {
               <Route path='/signup' element={<Signup />} />
             </>
             :
-            <Route path='/map' element={<Map />} />
+            <>
+              <Route path='/map' element={<Map />} />
+              <Route path='/chatbot' element={<Chatbot />} />
+            </>
         }
         <Route path='*' element={<NotFound />} />
       </Routes>
