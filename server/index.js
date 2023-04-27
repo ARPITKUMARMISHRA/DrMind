@@ -37,9 +37,18 @@ app.use('/', require('./routes'));
 
 // Listening to the port
 const port = process.env.PORT || 8000;
-app.listen(port, (err) => {
+const server = app.listen(port, (err) => {
   if (err)
     console.log(`Error while starting server.`);
   else
     console.log(`Server started at http://localhost:${port}`);
 });
+
+
+// Using Sockets
+const io = require('socket.io')(server, {
+  cors: {
+    origin: process.env.CLIENT_URL
+  }
+});
+require('./sockets/index')(io);
