@@ -9,6 +9,7 @@ import Map from './components/Maps/Map';
 import NotFound from './components/Errors/NotFound';
 import Chatbot from './components/Chatbot/Chatbot';
 import { socket } from './socket';
+import Quiz from './components/Quiz/Quiz';
 
 function App() {
   useEffect(() => {
@@ -31,6 +32,7 @@ function App() {
             <>
               <Route path='/map' element={<Map />} />
               <Route path='/chatbot' element={<Chatbot />} />
+              <Route path='/quiz' element={<Quiz />} />
             </>
         }
         <Route path='*' element={<NotFound />} />

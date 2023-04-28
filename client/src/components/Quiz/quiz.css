@@ -1,0 +1,30 @@
+.option-container {
+    display: flex;
+    flex-direction: column;
+    margin: 6px 4px;
+    width: 100%;
+    padding: 10px;
+}
+
+.option-btn {
+    padding: 5px;
+    border-radius: 3px;
+    transition: 0.6s;
+    margin: 5px;
+    min-height: 30px;
+    background-color: #f1f1f1 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.option-btn:hover {
+    background-color: rgb(60 129 131) !important;
+    color: white;
+    cursor: pointer;
+}
+
+.checked {
+    background-color: rgb(60 129 131) !important;
+    color: white !important;
+}
