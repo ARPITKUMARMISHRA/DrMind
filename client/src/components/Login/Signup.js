@@ -23,15 +23,15 @@ export default function Signup() {
     const nav = useNavigate();
     const [login, setLogin] = useContext(AuthContext);
 
-    const [name, setName] = useState(localStorage.getItem('name') ? localStorage.getItem('name') : '');
+    const [name, setName] = useState(sessionStorage.getItem('name') ? sessionStorage.getItem('name') : '');
     const handleName = (e) => {
-        localStorage.setItem('name', e.target.value);
+        sessionStorage.setItem('name', e.target.value);
         setName(e.target.value);
     }
 
-    const [email, setEmail] = useState(localStorage.getItem('email') ? localStorage.getItem('email') : '');
+    const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
     const handleEmail = (e) => {
-        localStorage.setItem('email', e.target.value);
+        sessionStorage.setItem('email', e.target.value);
         setEmail(e.target.value);
     }
 

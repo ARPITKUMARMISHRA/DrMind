@@ -14,6 +14,7 @@ import { QuizData } from './QuizData'
 import QuizResult from './QuizResult';
 // import Popup from './Popup';
 import './quiz.css';
+import Navbar from '../Navbar/Navbar';
 
 
 const theme = createTheme();
@@ -57,6 +58,7 @@ function Quiz() {
     }
     return (
         <ThemeProvider theme={theme}>
+            <Navbar />
             {
                 showResult ?
                     <QuizResult score={score} totalScore={totalScore} tryAgain={resetAll} />

@@ -10,6 +10,7 @@ import NotFound from './components/Errors/NotFound';
 import Chatbot from './components/Chatbot/Chatbot';
 import { socket } from './socket';
 import Quiz from './components/Quiz/Quiz';
+import Home from './components/Home/Home';
 
 function App() {
   useEffect(() => {
@@ -21,7 +22,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<>Homepage without login</>} />
+        <Route path='/' element={<Home />} />
         {
           !login ?
             <>

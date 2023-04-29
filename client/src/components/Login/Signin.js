@@ -24,9 +24,9 @@ export default function Signin() {
   const [login, setLogin] = useContext(AuthContext);
 
 
-  const [email, setEmail] = useState(localStorage.getItem('email') ? localStorage.getItem('email') : '');
+  const [email, setEmail] = useState(sessionStorage.getItem('email') ? sessionStorage.getItem('email') : '');
   const handleEmail = (e) => {
-    localStorage.setItem('email', e.target.value);
+    sessionStorage.setItem('email', e.target.value);
     setEmail(e.target.value);
   }
 
