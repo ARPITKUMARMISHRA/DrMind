@@ -8,7 +8,13 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     salt: { type: String, required: true },
-    name: { type: String, required: true }
+    name: { type: String, required: true },
+    // Chat fields
+    set: { type: String },
+    rooms: [{
+        id: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },
+        time: { type: mongoose.Schema.Types.Date, required: true }
+    }]
 }, {
     timestamps: true
 });
