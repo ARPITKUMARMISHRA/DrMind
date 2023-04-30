@@ -6,7 +6,8 @@ const messageSchema = new mongoose.Schema({
     //Login fields
     roomid: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },
     msg: { type: String },
-    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+    time: { type: Number }
 }, {
     timestamps: true
 });
