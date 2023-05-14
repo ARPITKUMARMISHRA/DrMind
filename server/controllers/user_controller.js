@@ -37,7 +37,10 @@ module.exports.create = async function (req, res) {
                         // req.flash('success', 'Logged Up Successfully');
                         const data = {
                             user: {
-                                id: user.id
+                                id: user.id,
+                                name: user.name,
+                                username: user.username,
+                                email: user.email
                             }
                         };
                         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
@@ -77,7 +80,10 @@ module.exports.createSession = function (req, res) {
                 // req.flash('warning', 'Account already exists');
                 const data = {
                     user: {
-                        id: user.id
+                        id: user.id,
+                        name: user.name,
+                        username: user.username,
+                        email: user.email
                     }
                 };
                 const authtoken = jwt.sign(data, process.env.JWT_SECRET);
@@ -153,8 +159,17 @@ module.exports.exists = async (req, res) => {
         const data = jwt.verify(token, process.env.JWT_SECRET);
         if (data && data.user) {
             const user = await User.findById(data.user.id);
-            if (user)
-                return res.status(200).json({});
+            if (user) {
+                const data = {
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        username: user.username,
+                        email: user.email
+                    }
+                };
+                return res.status(200).json(data);
+            }
             else {
                 res.cookie('auth-token', '', { expires: Date.now() });
                 return res.status(403).json({});

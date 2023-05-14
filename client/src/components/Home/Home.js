@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 function Home() {
     return (
-        <body>
+        <>
             {/* Owl Carousel */}
             {/* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossOrigin="anonymous" referrerPolicy="no-referrer" /> */}
             {/* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossOrigin="anonymous" referrerPolicy="no-referrer" /> */}
@@ -174,7 +174,7 @@ function Home() {
 
                                             <div className="item-info text-white">
                                                 <p className="fw-7 name">The International Association for Suicide Prevention (IASP)</p>
-                                                <span className="designation fw-4"><a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank">Visit their Site</a></span>
+                                                <span className="designation fw-4"><Link to="https://www.iasp.info/resources/Crisis_Centres/" target="_blank">Visit their Site</Link></span>
                                             </div>
                                         </div>
                                         <div className="item-right">
@@ -193,10 +193,10 @@ function Home() {
                         <div className="footer-content">
                             <div className="footer-list d-grid text-white">
                                 <div className="footer-item">
-                                    <a href="#" className="navbar-brand d-flex align-items-center">
+                                    <Link to="#" className="navbar-brand d-flex align-items-center">
                                         {/* <span className="brand-shape d-inline-block text-white">M</span> */}
                                         <span className="brand-text fw-7">DrMind</span>
-                                    </a>
+                                    </Link>
                                     <p className="text-white">DrMind provides a calm and relaxed way to free people from mental issues plaguing them.</p>
 
                                 </div>
@@ -225,7 +225,7 @@ function Home() {
             {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossOrigin="anonymous" referrerPolicy="no-referrer"></script> */}
             {/* custom js */}
             {/* <script src="./script.js"></script> */}
-        </body>
+        </>
     );
 }
 

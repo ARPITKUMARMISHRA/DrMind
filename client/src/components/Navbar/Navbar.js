@@ -10,9 +10,9 @@ import './navbar.css'
 
 const Brand = () => {
     return (
-        <NavLink href="/" className="brand">
+        <NavLink to="/" className="brand">
             {/* <span class="brand-shape d-inline-block text-white">M</span> */}
-            <span class="brandname">DrMind</span>
+            <span className="brandname">DrMind</span>
         </NavLink>
     );
 }

@@ -12,9 +12,8 @@ const userSchema = new mongoose.Schema({
     // Chat fields
     set: { type: String },
     rooms: [{
-        roomid: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },
-        time: { type: mongoose.Schema.Types.Date, required: true },
-        unseen: { type: Number }
+        other: { type: mongoose.Schema.Types.ObjectId },
+        roomid: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' }
     }]
 }, {
     timestamps: true

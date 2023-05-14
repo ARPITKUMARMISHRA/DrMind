@@ -7,7 +7,7 @@ const messageSchema = new mongoose.Schema({
     roomid: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },
     msg: { type: String },
     sender: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
-    time: { type: Number }
+    time: { type: Date }
 }, {
     timestamps: true
 });

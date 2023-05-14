@@ -1,9 +1,9 @@
 import { React, useEffect, useState } from "react";
 import AuthContext from "./authContext";
+import io from 'socket.io-client';
 
-
-const userExists = async (setLogin) => {
-    const exists = await (async function () {
+const userExists = async (setLogin, setSocket) => {
+    const login = await (async function () {
         try {
             let res = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/exists`, {
                 method: 'POST',
@@ -13,26 +13,38 @@ const userExists = async (setLogin) => {
                 },
                 credentials: 'include'
             });
-            if (res.status === 200)
-                return true;
+            if (res.status === 200) {
+                let data = await res.clone().json();
+                // sessionStorage.setItem('user', data.user);
+                return data.user;
+            }
             else
-                return false;
+                return undefined;
         } catch (err) {
             console.log('Error occured while verifying user');
-            return false;
+            return undefined;
         }
     })();
-    setLogin(exists);
+    if (login) {
+        setSocket(io(process.env.REACT_APP_SERVER_URL, {
+            withCredentials: true
+        }));
+    } else {
+        setSocket(undefined);
+    }
+    setLogin(login);
 }
 
 
 const AuthState = (props) => {
-    const [login, setLogin] = useState(false);
+    const [login, setLogin] = useState(undefined);
+    const [socket, setSocket] = useState(undefined);
     useEffect(() => {
-        userExists(setLogin);
+        userExists(setLogin, setSocket);
     }, []);
+
     return (
-        <AuthContext.Provider value={[login, setLogin]}>
+        <AuthContext.Provider value={[login, setLogin, socket]}>
             {props.children}
         </AuthContext.Provider>
     );

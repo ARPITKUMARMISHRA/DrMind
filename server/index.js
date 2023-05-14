@@ -48,7 +48,9 @@ const server = app.listen(port, (err) => {
 // Using Sockets
 const io = require('socket.io')(server, {
   cors: {
-    origin: process.env.CLIENT_URL
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    allowedHeaders: ['Cookie']
   }
 });
 require('./sockets/index')(io);

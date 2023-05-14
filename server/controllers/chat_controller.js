@@ -2,148 +2,86 @@ const User = require('../models/user');
 const Room = require('../models/room');
 const Message = require('../models/message');
 
-// Function for getting data of all contacts & profiles
-module.exports.getRooms = (req, res) => {
+// Send all users to client
+module.exports.getUsers = async (req, res) => {
+    try {
+        const data = await User.find({}).select('_id name');
+        return res.status(200).json(data);
+    } catch (err) {
+        console.log('Error while sending all Users', err);
+        return res.status(500).json({});
+    }
+}
+
+// Function to send the chats in a room
+module.exports.getChatRoom = async (req, res) => {
+    const { otheruser } = req.body;
     const currentUser = req.user.id;
+
     User.findById(currentUser)
-        .then(async (user) => {
-            // Get all rooms
-            let rooms = user.rooms;
-            let promises = rooms.map(async (room) => {
-                const usersInRoom = (await Room.findById(room.roomid)).users;
-                room = {
-                    roomid: room.roomid,
-                    time: room.time,
-                    users: usersInRoom
-                };
-                return room;
+        .then(async user => {
+            let room = await user.rooms.find((value, index) => {
+                return value.other.toString() === otheruser;
             });
-            rooms = await Promise.all(promises);
-            console.log(rooms);
-            let users = await User.find({}).select('_id name');
-            return res.status(200).json({ rooms: rooms, users: users });
+            room = await Room.findById(room.roomid);
+            if (room) {
+                // Searching all messages of a pre-existing room
+                try {
+                    let messagePromise = room.messages.map((messageId) => {
+                        return Message.findById(messageId);
+                    });
+                    let messages = await Promise.all(messagePromise);
+                    messages = await messages.map(async (message) => {
+                        return {
+                            msg: message.msg,
+                            sender: message.sender,
+                            time: message.time
+                        }
+                    });
+                    // Sending all messages of a room
+                    return res.status(200).json(messages);
+                } catch (err) {
+                    console.log('Error while searching for messages');
+                    return res.status(500).json({});
+                }
+            } else {
+                // Creating new empty room
+                let newRoom = new Room({
+                    users: [currentUser, otheruser],
+                    messages: []
+                });
+                let roomSavePromise = newRoom.save();
+                user.rooms.push({ other: otheruser, roomid: newRoom._id });
+                let userSavePromise1 = user.save();
+                User.findById(otheruser)
+                    .then(async otheruser => {
+                        otheruser.rooms.push({ other: currentUser, roomid: newRoom._id });
+                        let userSavePromise2 = otheruser.save();
+                        try {
+                            await Promise.all([roomSavePromise, userSavePromise1, userSavePromise2]);
+                            console.log(newRoom);
+                            // Sending empty room's messages
+                            return res.status(200).json(newRoom.messages);
+                        } catch (err) {
+                            console.log('Error while inserting new rooms into users', err);
+                            return res.status(500).json({});
+                        }
+                    })
+                    .catch(err => {
+                        console.log('Error while finding clicked user', err);
+                        return res.status(500).json({});
+                    });
+            }
         })
         .catch(err => {
-            console.log(`Error while fetching rooms`, err);
+            console.log('Error while finding user', err);
             return res.status(500).json({});
         });
 }
 
-// Function to get all chat in a room
-module.exports.getChats = (req, res) => {
-    const currentUser = req.user.id;
-    function error() { return res.status(500).json({}); }
 
-    Room.findById(req.body.roomid)
-        .then(async room => {
-            // Get chats in room
-            let messages = room.messages;
-            let getMessagesPromise = messages.map(msgid => {
-                return Message.findById(msgid).select('msg sender time');
-            });
-            messages = await Promise.all([...getMessagesPromise]);
-            return res.status(200).json(messages);
-        })
-        .catch(error);
-}
-
-// Function to delete a room
-module.exports.deleteRoom = (req, res) => {
-    const currentUser = req.user.id;
-    function error() { return res.status(500).json({}); }
-
-    User.findById(currentUser)
-        .then(user => {
-            user.rooms = user.rooms.filter((val, ind) => { val.id !== req.body.roomid });
-            user.save()
-                .then(async () => {
-                    const room = await Room.findById(req.body.roomid);
-                    const messages = room.messages;
-                    let deleteRoomPromise = Room.findByIdAndDelete(req.body.roomid);
-                    let deleteMessagePromise = messages.map(msgid => {
-                        return Message.findByIdAndDelete(msgid);
-                    })
-                    await Promise.all([deleteRoomPromise, ...deleteMessagePromise]);
-                    return res.status(200).json({});
-                })
-                .catch(error);
-        })
-        .catch(error);
-}
-
-// Function to send message in room
-module.exports.sendMessage = (req, res) => {
-    // console.log(req.body);
-    const currentUser = req.user.id;
-    const msg = new Message();
-    msg.sender = currentUser;
-    msg.msg = req.body.msg;
-    msg.time = req.body.time;
-
-    function error() { return res.status(500).json({}) };
-
-
-    // Sending message whom you have already contacted before
-    if (req.body.roomid) {
-        msg.roomid = req.body.roomid;
-        User.findById(currentUser)
-            .then(async user => {
-                let i = user.rooms.findIndex((val, ind) => val.roomid.toString() === req.body.roomid);
-                if (i >= 0) {
-                    msg.save()
-                        .then(msg => {
-                            user.rooms[i].time = req.body.time;
-                            user.save()
-                                .then(() => {
-                                    Room.findById(req.body.roomid)
-                                        .then(room => {
-                                            room.messages.push(msg);
-                                            room.save()
-                                                .then(() => { return res.status(200).json({}); })
-                                                .catch(error);
-                                        })
-                                        .catch(error);
-                                })
-                                .catch(error);
-                        })
-                        .catch(error);
-                } else error();
-            })
-            .catch(error);
-    }
-    // First time message
-    else if (req.body.to) {
-        const room = new Room({
-            users: [currentUser, req.body.to],
-            messages: []
-        });
-        room.save()
-            .then(() => {
-                msg.roomid = room._id;
-                msg.save()
-                    .then(msg => {
-                        User.findById(currentUser)
-                            .then(async user => {
-                                user.rooms.push({ roomid: room._id, time: req.body.time });
-                                user.save()
-                                    .then((user) => {
-                                        Room.findById(room.id)
-                                            .then(room => {
-                                                room.messages.push(msg);
-                                                room.save()
-                                                    .then(() => { return res.status(200).json({}); })
-                                                    .catch(error);
-                                            })
-                                            .catch(error);
-                                    })
-                                    .catch(error);
-                            })
-                            .catch(error);
-                    })
-                    .catch(error);
-            })
-            .catch(error);
-    } else {
-        error();
-    }
+// When the user has seen the chats of a room
+module.exports.messageSeen = async (req, res) => {
+    const { roomid } = req.body;
+    res.json({});
 }
