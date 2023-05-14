@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Message = require('../models/message');
+const Room = require('../models/room');
 
 // Get cookies from socket request from user
 async function getCookies(socket, next) {
@@ -62,19 +63,56 @@ module.exports = (io) => {
         });
 
         // Receiving the sent message
-        socket.on('send-msg', async ({ to, msg }) => {
+        socket.on('send-msg', async ({ to, msg, time }) => {
             const from = socket.user.id;
             const newMessage = new Message({
                 msg: msg,
-                sender: from
+                sender: from,
+                time: time
             });
-            socket.emit('get-sent-msg-id', newMessage._id);
-            if (onlineUsers.has(from)) {
-                // Sending message to destination
-                const socketid = onlineUsers.get(to).socketid;
-                console.log(socketid, newMessage._id);
-                io.to(socketid).emit('receive-msg', { _id: newMessage._id, from, msg });
-            }
+            // Finding room
+            Room.find({ $or: [{ users: [from, to] }, { users: [to, from] }] })
+                .then(async room => {
+                    if (room.length < 1)
+                        return;
+                    room = room[0];
+                    newMessage.roomid = room._id;
+                    // Saving message
+                    newMessage.save()
+                        .then(async message => {
+                            room.messages.push(message._id);
+                            console.log(message);
+                            // Updating room
+                            room.save()
+                                .then(async room => {
+                                    socket.emit('get-sent-msg-id', { _id: message._id, time: time });
+                                    if (onlineUsers.has(to)) {
+                                        // Sending message to destination when receiver is online
+                                        const socketid = onlineUsers.get(to).socketid;
+                                        console.log(socketid, message._id);
+                                        io.to(socketid).emit('receive-msg', { _id: message._id, from, msg, time });
+                                    }
+                                    // Incrementing the number of unseen messages
+                                    User.findById(to)
+                                        .then(async user => {
+                                            try {
+                                                let countIncreasePromise = user.rooms.map(async element => {
+                                                    if (element.roomid === room._id)
+                                                        element.unseen = element.unseen + 1;
+                                                    return element;
+                                                });
+                                                await Promise.all(countIncreasePromise);
+                                            } catch (err) {
+                                                console.log('Error while increasing the count of offline user', err);
+                                            }
+                                        })
+                                        .catch(err => { console.log('Error while finding receiving user', err); });
+                                })
+                                .catch(err => { console.log('Error while updating room', err); });
+                        })
+                        .catch(err => { console.log('Error while saving message', err); });
+                })
+                .catch(err => { console.log('Error while finding room', err); });
         });
     });
 }

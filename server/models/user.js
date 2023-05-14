@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     set: { type: String },
     rooms: [{
         other: { type: mongoose.Schema.Types.ObjectId },
-        roomid: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' }
+        roomid: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },
+        unseen: { type: Number, default: 0 }
     }]
 }, {
     timestamps: true

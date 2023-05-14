@@ -4,9 +4,23 @@ const Message = require('../models/message');
 
 // Send all users to client
 module.exports.getUsers = async (req, res) => {
+    const currentUser = req.user.id;
     try {
-        const data = await User.find({}).select('_id name');
-        return res.status(200).json(data);
+        // Getting all users from database
+        const allusers = await User.find({}).select('_id name');
+        // Getting all contact rooms, so that we can send the unseen messages count
+        User.findById(currentUser)
+            .then(async user => {
+                let allrooms = user.rooms.map(room => {
+                    return { other: room.other, unseen: room.unseen };
+                });
+                allrooms = await Promise.all(allrooms);
+                return res.status(200).json({ allusers, allrooms });
+            })
+            .catch(err => {
+                console.log('Error while getting all contact rooms', err);
+                return res.status(500).json({});
+            })
     } catch (err) {
         console.log('Error while sending all Users', err);
         return res.status(500).json({});
@@ -24,6 +38,7 @@ module.exports.getChatRoom = async (req, res) => {
                 return value.other.toString() === otheruser;
             });
             room = await Room.findById(room.roomid);
+            // console.log(room);
             if (room) {
                 // Searching all messages of a pre-existing room
                 try {
@@ -38,6 +53,8 @@ module.exports.getChatRoom = async (req, res) => {
                             time: message.time
                         }
                     });
+                    messages = await Promise.all([...messages]);
+                    // console.log(messages);
                     // Sending all messages of a room
                     return res.status(200).json(messages);
                 } catch (err) {

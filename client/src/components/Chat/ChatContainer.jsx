@@ -14,9 +14,11 @@ export default function ChatContainer({ room, chat, login, socket, handleMsgToBe
 
   // Handling the sending of message
   const handleSendMsg = async (msg) => {
-    socket.emit('send-msg', { to: room._id, msg: msg });
-    socket.on('get-sent-msg-id', (_id) => {
-      handleMsgToBeShown({ _id, sender: login.id, msg });
+    socket.emit('send-msg', { to: room._id, msg: msg, time: Date.now() });
+    socket.on('get-sent-msg-id', ({ _id, time }) => {
+      if (_id && time) {
+        handleMsgToBeShown({ _id, sender: login.id, msg, time });
+      }
     });
   };
 
@@ -45,7 +47,7 @@ export default function ChatContainer({ room, chat, login, socket, handleMsgToBe
                 className={`message ${(message.sender === login.id) ? "sended" : "recieved"}`}
               >
                 <div className="content ">
-                  <p>{message.msg}</p>
+                  <p>{message.msg + ', ' + message.time}</p>
                 </div>
               </div>
             </div>

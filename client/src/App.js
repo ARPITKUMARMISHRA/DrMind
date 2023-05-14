@@ -36,14 +36,14 @@ function App() {
 
   // For the arrival of new message
   useEffect(() => {
-    if (login) {
-      socket.on('receive-msg', ({ _id, from, msg }) => {
+    if (login && socket) {
+      socket.on('receive-msg', ({ _id, from, msg, time }) => {
         // When chat page is not open, show the notification
         if (!window.location.pathname.match('/chat')) {
           chatNotification(msg);
         }
         // Setting the new arrived msg, so that <Chat/> can access it
-        setArrivedMsg({ _id, from, msg });
+        setArrivedMsg({ _id, from, msg, time });
       });
       return () => { socket.off('receive-msg'); }
     }

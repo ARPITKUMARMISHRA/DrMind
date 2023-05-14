@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-export default function Contacts({ user, rooms, onlineRooms, handleChatChange, arrivedMsg, handleMsgToBeShown }) {
+export default function Contacts({ user, rooms, onlineRooms, handleChatChange, arrivedMsg, handleMsgToBeShown, handleUnseenCount, unseen }) {
   const [currentSelected, setCurrentSelected] = useState(undefined);
   const [onlineRoomsMap, setOnlineRoomsMap] = useState(new Map());
 
@@ -14,9 +14,10 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
     setOnlineRoomsMap(map);
   }, [onlineRooms]);
 
-  // When the chat is changes
+  // When the chat is changed
   const changeCurrentChat = async (room) => {
     setCurrentSelected(room._id);
+    handleUnseenCount(room._id, 0);
     // Getting a chatroom from server
     let chat = await (await fetch(`${process.env.REACT_APP_SERVER_URL}/chat/getChatRoom`, {
       method: 'POST',
@@ -37,7 +38,7 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
       // Seen
       if (currentSelected === arrivedMsg.from) {
         // Show message in Chat Container
-        handleMsgToBeShown({ _id: arrivedMsg._id, sender: arrivedMsg.from, msg: arrivedMsg.msg })
+        handleMsgToBeShown({ _id: arrivedMsg._id, sender: arrivedMsg.from, msg: arrivedMsg.msg, time: arrivedMsg.time })
         // Inform server that message has been seen
         fetch(`${process.env.REACT_APP_SERVER_URL}/chat/msgSeen`, {
           method: 'POST',
@@ -47,10 +48,11 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
           },
           credentials: 'include'
         });
+        handleUnseenCount(arrivedMsg.from, 0);
       }
       // Not seen
       else {
-
+        handleUnseenCount(arrivedMsg.from);
       }
     }
   }, [arrivedMsg]);
@@ -77,7 +79,7 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
                   />
                 </div>
                 <div className="username">
-                  <h3>{room.name}</h3>
+                  <h3>{room.name + ((unseen && unseen.has(room._id) && unseen.get(room._id) > 0) ? ` ${unseen.get(room._id)}` : '')}</h3>
                 </div>
               </div>
             );
