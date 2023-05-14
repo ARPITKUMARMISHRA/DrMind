@@ -51,7 +51,7 @@ export default function Signin() {
     });
     if (res.status === 200) {
       setLogin(true);
-      nav('/');
+      window.location.href = '/';
     } else {
       console.log('Could not authenticate');
     }

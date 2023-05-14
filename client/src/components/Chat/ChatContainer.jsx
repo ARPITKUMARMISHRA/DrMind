@@ -20,6 +20,7 @@ export default function ChatContainer({ room, chat, login, socket, handleMsgToBe
         handleMsgToBeShown({ _id, sender: login.id, msg, time });
       }
     });
+    console.log(messages);
   };
 
   return (

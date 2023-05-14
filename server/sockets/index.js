@@ -40,7 +40,7 @@ module.exports = (io) => {
 
     // On Connection
     io.on('connection', async (socket) => {
-        console.log(socket.id, socket.user);
+        console.log(socket.id, socket.user.name);
 
         // Sending all online users when someone connects to server
         socket.on('get-online-users', async () => {
@@ -81,7 +81,7 @@ module.exports = (io) => {
                     newMessage.save()
                         .then(async message => {
                             room.messages.push(message._id);
-                            console.log(message);
+                            // console.log(message);
                             // Updating room
                             room.save()
                                 .then(async room => {
@@ -89,19 +89,20 @@ module.exports = (io) => {
                                     if (onlineUsers.has(to)) {
                                         // Sending message to destination when receiver is online
                                         const socketid = onlineUsers.get(to).socketid;
-                                        console.log(socketid, message._id);
+                                        // console.log(socketid, message._id);
                                         io.to(socketid).emit('receive-msg', { _id: message._id, from, msg, time });
                                     }
                                     // Incrementing the number of unseen messages
                                     User.findById(to)
                                         .then(async user => {
                                             try {
-                                                let countIncreasePromise = user.rooms.map(async element => {
-                                                    if (element.roomid === room._id)
-                                                        element.unseen = element.unseen + 1;
-                                                    return element;
+                                                let index = await user.rooms.findIndex(async element => {
+                                                    return element.roomid === room._id;
                                                 });
-                                                await Promise.all(countIncreasePromise);
+                                                user.rooms[index].unseen += 1;
+                                                user.save()
+                                                    .then()
+                                                    .catch(err => { console.log('Error while updating the useen value', err); });
                                             } catch (err) {
                                                 console.log('Error while increasing the count of offline user', err);
                                             }

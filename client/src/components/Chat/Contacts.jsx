@@ -42,7 +42,7 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
         // Inform server that message has been seen
         fetch(`${process.env.REACT_APP_SERVER_URL}/chat/msgSeen`, {
           method: 'POST',
-          body: JSON.stringify({ roomid: arrivedMsg.from }),
+          body: JSON.stringify({ otheruser: arrivedMsg.from }),
           headers: {
             'Content-Type': 'application/json'
           },
