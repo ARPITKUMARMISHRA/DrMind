@@ -38,8 +38,11 @@ module.exports.getChatRoom = async (req, res) => {
                 return value.other.toString() === otheruser;
             });
             // console.log(roomInd);
-            user.rooms[roomInd].unseen = 0;
-            let room = user.rooms[roomInd];
+            let room = undefined;
+            if (roomInd >= 0 && roomInd < user.rooms.length) {
+                user.rooms[roomInd].unseen = 0;
+                room = user.rooms[roomInd];
+            }
             user.save()
                 .then(async user => {
                     if (room) {

@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { ChatInput } from "./ChatInput";
+import Messagetime from "./Messagetime";
+
+// Component that bring something into view
+const AlwaysScrollToBottom = () => {
+  const ref = useRef();
+  useEffect(() => ref.current.scrollIntoView());
+  return <div ref={ref} />;
+};
 
 export default function ChatContainer({ room, chat, login, socket, handleMsgToBeShown }) {
   const [messages, setMessages] = useState([]);
@@ -28,12 +36,12 @@ export default function ChatContainer({ room, chat, login, socket, handleMsgToBe
 
       <div className="chat-header">
         <div className="user-details">
-          <div className="avatar">
+          {/* <div className="avatar">
             <img
               src={`https://api.multiavatar.com/4645646`}
               alt=""
             />
-          </div>
+          </div> */}
           <div className="username">
             <h3>{room.name}</h3>
           </div>
@@ -48,9 +56,12 @@ export default function ChatContainer({ room, chat, login, socket, handleMsgToBe
                 className={`message ${(message.sender === login.id) ? "sended" : "recieved"}`}
               >
                 <div className="content ">
-                  <p>{message.msg + ', ' + message.time}</p>
+                  <p>{message.msg}</p>
+                  <Messagetime messagedate={message.time} />
                 </div>
               </div>
+              {/* AlwaysScollToBottom brings the latest message into current view */}
+              <AlwaysScrollToBottom />
             </div>
           );
         })}

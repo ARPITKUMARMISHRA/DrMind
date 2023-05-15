@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SendIcon from '@mui/icons-material/Send';
+import { ClickAwayListener } from "@mui/material";
 import styled from "styled-components";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import Picker from "emoji-picker-react";
@@ -8,7 +9,10 @@ export function ChatInput({ handleSendMsg }) {
   const [msg, setMsg] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const handleEmojiPickerhideShow = () => {
+  const handleClickAway = () => {
+    setShowEmojiPicker(false);
+  }
+  const handleEmojiPickerShow = () => {
     document.querySelector(`#msginput`).focus();
     setShowEmojiPicker(!showEmojiPicker);
   };
@@ -32,10 +36,12 @@ export function ChatInput({ handleSendMsg }) {
     <Container>
 
       <div className="button-container">
-        <div className="emoji">
-          <BsEmojiSmileFill onClick={handleEmojiPickerhideShow} />
-          {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} lazyLoadEmojis={true} />}
-        </div>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <div className="emoji">
+            <BsEmojiSmileFill onClick={handleEmojiPickerShow} />
+            {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} lazyLoadEmojis={true} />}
+          </div>
+        </ClickAwayListener>
       </div>
 
       <form className="input-container" onSubmit={(event) => sendChat(event)}>
@@ -46,6 +52,7 @@ export function ChatInput({ handleSendMsg }) {
           onChange={(e) => setMsg(e.target.value)}
           value={msg}
           autoFocus
+          autoComplete="off"
         />
 
         <button type="submit">

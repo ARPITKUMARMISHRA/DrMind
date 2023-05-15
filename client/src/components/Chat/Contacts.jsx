@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Unreadcount from "./Unreadcount";
 
 export default function Contacts({ user, rooms, onlineRooms, handleChatChange, arrivedMsg, handleMsgToBeShown, handleUnseenCount, unseen }) {
   const [currentSelected, setCurrentSelected] = useState(undefined);
@@ -79,8 +80,9 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
                   />
                 </div>
                 <div className="username">
-                  <h3>{room.name + ((unseen && unseen.has(room._id) && unseen.get(room._id) > 0) ? ` ${unseen.get(room._id)}` : '')}</h3>
+                  <h3>{room.name}</h3>
                 </div>
+                <Unreadcount count={((unseen && unseen.has(room._id) && unseen.get(room._id) > 0) ? unseen.get(room._id) : 0)} />
               </div>
             );
           } else {
@@ -90,12 +92,12 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
       </div>
 
       <div className="current-user">
-        <div className="avatar">
+        {/* <div className="avatar">
           <img
             src={`https://api.multiavatar.com/4645646`}
             alt="avatar"
           />
-        </div>
+        </div> */}
         <div className="username">
           <h2>{user.name}</h2>
         </div>
@@ -151,6 +153,7 @@ const Contactbox = styled.div`
     }
     
     .contact {
+      position: relative;
       background-color: #fbf2d5;
       cursor: pointer;
       width: 100%;
@@ -159,7 +162,6 @@ const Contactbox = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: 0.5s ease-in-out;
       .avatar {
         img {
           height: 3rem;
@@ -173,10 +175,11 @@ const Contactbox = styled.div`
       }
     }
     .selected {
+      transition: 0.5s ease-in-out;
       background-color: pink;
     }
     .online {
-      border: 1px green solid;
+      outline: 2px green solid;
     }
   }
 

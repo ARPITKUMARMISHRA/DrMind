@@ -5,17 +5,21 @@ const Room = require('../models/room');
 
 // Get cookies from socket request from user
 async function getCookies(socket, next) {
-    let cookieArr = await socket.handshake.headers.cookie.split('; ');
-    socket.cookies = {};
-    await cookieArr.forEach(async element => {
-        const [name, value] = await element.split('=');
-        socket.cookies[name] = value;
-    });
+    try {
+        socket.cookies = {};
+        let cookieArr = await socket.handshake.headers.cookie.split('; ');
+        await cookieArr.forEach(async element => {
+            const [name, value] = await element.split('=');
+            socket.cookies[name] = value;
+        });
+    } catch (err) {
+        console.log(`Error while getting Cookies`, err);
+    }
     await next();
 }
 // Fetch user details from the auth-token
 async function fetchUser(socket, next) {
-    const token = socket.cookies['auth-token'];
+    const token = (socket.cookies) ? socket.cookies['auth-token'] : undefined;
     if (!token) {
         socket.user = null;
         return console.log('auth-token not found');
