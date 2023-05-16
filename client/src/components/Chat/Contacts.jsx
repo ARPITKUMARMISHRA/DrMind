@@ -2,6 +2,25 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Unreadcount from "./Unreadcount";
 
+function Group({ group }) {
+  const [color, setColor] = React.useState(() => {
+    if (group === 'red') return 'red';
+    if (group === 'green') return 'green';
+  });
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        width: '11px',
+        height: '11px',
+        backgroundColor: color,
+        borderRadius: '50%',
+        marginLeft: '5px'
+      }}
+    ></span>
+  );
+}
+
 export default function Contacts({ user, rooms, onlineRooms, handleChatChange, arrivedMsg, handleMsgToBeShown, handleUnseenCount, unseen }) {
   const [currentSelected, setCurrentSelected] = useState(undefined);
   const [onlineRoomsMap, setOnlineRoomsMap] = useState(new Map());
@@ -99,7 +118,7 @@ export default function Contacts({ user, rooms, onlineRooms, handleChatChange, a
           />
         </div> */}
         <div className="username">
-          <h2>{user.name}</h2>
+          <h2>{user.name}</h2><Group group={user.group} />
         </div>
       </div>
 

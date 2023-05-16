@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import AuthState from '../../contexts/auth/authState';
+import AuthContext from '../../contexts/auth/authContext';
+
 import {
   Typography,
   Button,
@@ -9,6 +12,8 @@ import {
 import Suggestions from './Suggestions';
 
 function QuizResult(props) {
+  const [login, setLogin, socket] = useContext(AuthContext);
+
   const [percentage] = useState(() => {
     let percentage = (props.score / props.totalScore * 100).toFixed(0);
     return percentage;
@@ -30,6 +35,27 @@ function QuizResult(props) {
       setMessage('Severe case of depression or extreme anxiety');
     }
   }, [percentage]);
+
+  // Updating the user's group on server
+  useEffect(() => {
+    if (login) {
+      fetch(`${process.env.REACT_APP_SERVER_URL}/user/updateGroup`, {
+        method: 'POST',
+        body: JSON.stringify({ percentage }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      }).then(async (data) => {
+        data = await data.clone().json();
+        const login2 = new Object(login);
+        login2.group = data.group;
+        console.log(login2);
+        setLogin(login2);
+      });
+    }
+  }, []);
+
   return (
     <>
       <Container component='main' style={{ maxWidth: '600px', marginTop: '50px' }}>

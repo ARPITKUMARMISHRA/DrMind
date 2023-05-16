@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     salt: { type: String, required: true },
     name: { type: String, required: true },
     // Chat fields
-    set: { type: String },
+    set: { type: String, default: '' },
     rooms: [{
         other: { type: mongoose.Schema.Types.ObjectId },
         roomid: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },

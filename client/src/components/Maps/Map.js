@@ -5,6 +5,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import './map.css';
+import Navbar from '../Navbar/Navbar';
 
 async function generateMap() {
     // Function to display map with user's current position
@@ -91,26 +92,30 @@ function Map() {
     });
 
     return (
-        <div className='mapContainer'>
-            {
-                isLoading ?
-                    <Box sx={{ display: 'flex' }}>
-                        <CircularProgress />
-                    </Box>
-                    :
-                    (locationEnabled ?
-                        <>
-                            <Typography className='mapCaption' variant='h4' gutterBottom>Nearby Health centres</Typography>
-                            <div id="map" className="healthMap"></div>
-                        </>
+        <>
+            <Navbar />
+            <br />
+            <div className='mapContainer'>
+                {
+                    isLoading ?
+                        <Box sx={{ display: 'flex' }}>
+                            <CircularProgress />
+                        </Box>
                         :
-                        <>
-                            <Box component="span" sx={{ p: 2 }}>
-                                <Typography variant='h5' gutterBottom>Please enable your location to view Nearby Locations.</Typography>
-                            </Box>
-                        </>)
-            }
-        </div>
+                        (locationEnabled ?
+                            <>
+                                <Typography className='mapCaption' variant='h4' gutterBottom>Nearby Health centres</Typography>
+                                <div id="map" className="healthMap"></div>
+                            </>
+                            :
+                            <>
+                                <Box component="span" sx={{ p: 2 }}>
+                                    <Typography variant='h5' gutterBottom>Please enable your location to view Nearby Locations.</Typography>
+                                </Box>
+                            </>)
+                }
+            </div>
+        </>
     );
 }
 

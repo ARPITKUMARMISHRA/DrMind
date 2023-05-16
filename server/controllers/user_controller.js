@@ -40,7 +40,8 @@ module.exports.create = async function (req, res) {
                                 id: user.id,
                                 name: user.name,
                                 username: user.username,
-                                email: user.email
+                                email: user.email,
+                                group: user.set
                             }
                         };
                         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
@@ -83,7 +84,8 @@ module.exports.createSession = function (req, res) {
                         id: user.id,
                         name: user.name,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        group: user.set
                     }
                 };
                 const authtoken = jwt.sign(data, process.env.JWT_SECRET);
@@ -165,7 +167,8 @@ module.exports.exists = async (req, res) => {
                         id: user.id,
                         name: user.name,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        group: user.set
                     }
                 };
                 return res.status(200).json(data);
@@ -193,4 +196,25 @@ module.exports.logout = async (req, res) => {
     } catch (err) {
         res.status(500).json({});
     }
+}
+
+
+
+module.exports.updateGroup = async (req, res) => {
+    const { percentage } = req.body;
+    const currentUser = req.user.id;
+    User.findById(currentUser)
+        .then(async user => {
+            user.set = (percentage >= 60) ? 'green' : 'red';
+            user.save()
+                .then((user) => {
+                    res.status(200).json({ group: user.set });
+                })
+                .catch(err => {
+                    res.status(500).json({});
+                });
+        })
+        .catch(err => {
+            res.status(500).json({});
+        });
 }

@@ -16,7 +16,6 @@ export default function ChatContainer({ room, chat, login, socket, handleMsgToBe
 
   // Storing all chat into messages hook
   useEffect(() => {
-    console.log(chat);
     setMessages(chat);
   }, [chat]);
 
@@ -25,7 +24,7 @@ export default function ChatContainer({ room, chat, login, socket, handleMsgToBe
     socket.emit('send-msg', { to: room._id, msg: msg, time: Date.now() });
     socket.on('get-sent-msg-id', ({ _id, time }) => {
       if (_id && time) {
-        handleMsgToBeShown({ _id, sender: login.id, msg, time });
+        handleMsgToBeShown({ _id: _id.toString(), sender: login.id, msg, time });
       }
     });
     console.log(messages);

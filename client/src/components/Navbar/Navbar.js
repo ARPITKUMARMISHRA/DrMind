@@ -56,7 +56,7 @@ const Navbar = () => {
                     <MenuIcon />
                 </div>
                 <div className={`nav-elements  ${showNavbar && 'active'}`}>
-                    {showNavbar ? <CloseIcon onClick={handleHideNavbar} style={{ position: 'absolute', top: '16px', right: '16px', fontSize: '30px' }} /> : null}
+                    {showNavbar ? <CloseIcon onClick={handleHideNavbar} style={{ position: 'absolute', top: '16px', right: '16px', fontSize: '30px', cursor: 'pointer' }} /> : null}
                     <ul>
                         <li>
                             <NavLink to="/">Home</NavLink>
@@ -65,10 +65,16 @@ const Navbar = () => {
                             login ?
                                 <>
                                     <li>
-                                        <NavLink to="/map">Find Nearby Healthcenters</NavLink>
+                                        <NavLink to="/quiz">Quiz</NavLink>
                                     </li>
                                     <li>
-                                        <NavLink to="/chat">Chat App</NavLink>
+                                        <NavLink to="/map">Nearby Healthcenters</NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink to="/chat">Chat</NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink to="/chatbot">Health Bot</NavLink>
                                     </li>
                                 </>
                                 :

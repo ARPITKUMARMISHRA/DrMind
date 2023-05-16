@@ -69,6 +69,7 @@ module.exports = (io) => {
         // Receiving the sent message
         socket.on('send-msg', async ({ to, msg, time }) => {
             const from = socket.user.id;
+            // console.log(from, to);
             const newMessage = new Message({
                 msg: msg,
                 sender: from,
@@ -79,8 +80,10 @@ module.exports = (io) => {
                 .then(async room => {
                     if (room.length < 1)
                         return;
+                    // console.log(room);
                     room = room[0];
                     newMessage.roomid = room._id;
+                    // console.log(newMessage);
                     // Saving message
                     newMessage.save()
                         .then(async message => {
@@ -100,10 +103,13 @@ module.exports = (io) => {
                                     User.findById(to)
                                         .then(async user => {
                                             try {
-                                                let index = await user.rooms.findIndex(async element => {
-                                                    return element.roomid === room._id;
+                                                let updateUnseenPromise = await user.rooms.map(async element => {
+                                                    if (element.other.toString() === from) {
+                                                        element.unseen += 1;
+                                                    }
+                                                    return element;
                                                 });
-                                                user.rooms[index].unseen += 1;
+                                                user.rooms = await Promise.all(updateUnseenPromise);
                                                 user.save()
                                                     .then()
                                                     .catch(err => { console.log('Error while updating the useen value', err); });

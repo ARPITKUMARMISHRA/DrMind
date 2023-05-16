@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom';
+
 import {
     Box,
     Button,
@@ -15,6 +17,10 @@ import QuizResult from './QuizResult';
 // import Popup from './Popup';
 import './quiz.css';
 import Navbar from '../Navbar/Navbar';
+import Popup from './Popup';
+
+import AuthState from '../../contexts/auth/authState';
+import AuthContext from '../../contexts/auth/authContext';
 
 
 const theme = createTheme();
@@ -22,13 +28,28 @@ const theme = createTheme();
 
 
 function Quiz() {
+    const [login, setLogin, socket] = useContext(AuthContext);
+
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [totalScore, setTotalScore] = useState(0);
     const [clickedOption, setClickedOption] = useState(0);
     const [showResult, setShowResult] = useState(false);
     const [page, setPage] = useState(1);
-    const [modalVisible, setModalVisible] = useState(true);
+
+    const { state } = useLocation();
+    const [modalVisible, setModalVisible] = useState((login && state) ? (state.hint === true) : false);
+
+    useEffect(() => {
+        const func = (event) => {
+            if (document.hasFocus()) {
+                if (clickedOption >= 1 && clickedOption <= 4)
+                    document.getElementById('next-button').click();
+            }
+        };
+        document.addEventListener('keypress', func);
+        return () => { document.removeEventListener('keypress', func); };
+    }, [clickedOption]);
 
     const changeQuestion = () => {
         updateScore();
@@ -56,6 +77,12 @@ function Quiz() {
         setScore(0);
         setTotalScore(0);
     }
+
+
+    const handleModalVisibility = (visibility) => {
+        setModalVisible(visibility);
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <Navbar />
@@ -64,11 +91,11 @@ function Quiz() {
                     <QuizResult score={score} totalScore={totalScore} tryAgain={resetAll} />
                     :
                     <Container component='main' style={{ maxWidth: '600px', marginTop: '50px' }}>
-                        {/* {
-                            modalVisible ?
-                            <Popup close={setModalVisible} />
-                            : null
-                            } */}
+
+                        {modalVisible ?
+                            <Popup handleModalVisibility={handleModalVisibility} />
+                            : null}
+
                         <Typography variant='h4' textAlign='center'>Mental Health Test</Typography>
                         <Paper elevation={3}
                             style={{
@@ -87,7 +114,7 @@ function Quiz() {
                                 {QuizData[currentQuestion].options.map((option, i) => {
                                     return (
                                         <Paper
-                                            elevation='1'
+                                            elevation={1}
                                             className={`${clickedOption === i + 1 ? "checked" : null} option-btn `}
                                             key={i}
                                             onClick={() => setClickedOption(i + 1)} >

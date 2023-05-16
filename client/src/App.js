@@ -17,10 +17,14 @@ import Chatbot from './components/Chatbot/Chatbot';
 import Quiz from './components/Quiz/Quiz';
 import Home from './components/Home/Home';
 import Chat from './components/Chat/Chat';
+import Navbar from './components/Navbar/Navbar';
+import ChatbotPage from './components/Chatbot/ChatbotPage';
+import Yoga from './components/Yoga/Yoga';
 
 // Notifications
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from './components/Loader';
 
 
 // App
@@ -67,12 +71,12 @@ function App() {
             :
             <>
               <Route path='/map' element={<Map />} />
-              <Route path='/chatbot' element={<Chatbot />} />
-              <Route path='/quiz' element={<Quiz />} />
+              <Route path='/chatbot' element={<ChatbotPage />} />
               <Route path='/chat' element={<Chat arrivedMsg={arrivedMsg} />} />
             </>
         }
-        <Route path='*' element={<NotFound />} />
+        <Route path='/quiz' element={<Quiz />} />
+        <Route path='/yoga' element={<Yoga />} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>

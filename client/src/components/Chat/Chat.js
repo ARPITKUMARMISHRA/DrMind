@@ -7,7 +7,8 @@ import ChatContainer from "./ChatContainer";
 import Contacts from "./Contacts";
 import Welcome from "./Welcome";
 import Navbar from '../Navbar/Navbar';
-import loader from "../../../public/assets/images/loader.gif";
+import Nogroup from "./Nogroup";
+import Loader from "../Loader";
 
 export default function Chat({ arrivedMsg }) {
   const [login, setLogin, socket] = useContext(AuthContext);
@@ -17,14 +18,9 @@ export default function Chat({ arrivedMsg }) {
   const [currentChat, setCurrentChat] = useState(undefined);
   const [unseen, setUnseen] = useState(new Map());
 
-  // When Component is loaded successfully
-  useEffect(() => {
-    setIsLoading(false);
-  }, [isLoading]);
-
   // Load users or when a new user joins
   useEffect(() => {
-    if (login && socket) {
+    if (login && login.group !== '' && socket) {
       fetch(`${process.env.REACT_APP_SERVER_URL}/chat/getUsers`, {
         method: 'GET',
         headers: {
@@ -39,6 +35,9 @@ export default function Chat({ arrivedMsg }) {
           newUnseenMap.set(element.other, element.unseen);
         });
         setUnseen(newUnseenMap);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 10);
       });
 
       // Online features
@@ -93,19 +92,21 @@ export default function Chat({ arrivedMsg }) {
   return (
     <div>
       <Navbar />
-      {isLoading ?
-        <div style={{ width: '25%', minHeight: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 'auto' }}>
-          <img src={loader} alt="loading" className="loader" />
-        </div>
+      {isLoading ? <Loader />
         :
-        <Chatbox>
-          <Contacts user={login} rooms={rooms} onlineRooms={onlineRooms} handleChatChange={handleChatChange} arrivedMsg={arrivedMsg} handleMsgToBeShown={handleMsgToBeShown} handleUnseenCount={handleUnseenCount} unseen={unseen} />
-          {currentChat === undefined ?
-            <Welcome name={login.name} />
+        (
+          (login && login.group !== '') ?
+            <Chatbox>
+              <Contacts user={login} rooms={rooms} onlineRooms={onlineRooms} handleChatChange={handleChatChange} arrivedMsg={arrivedMsg} handleMsgToBeShown={handleMsgToBeShown} handleUnseenCount={handleUnseenCount} unseen={unseen} />
+              {currentChat === undefined ?
+                <Welcome name={login.name} />
+                :
+                <ChatContainer room={currentChat.room} chat={currentChat.chat} login={login} socket={socket} handleMsgToBeShown={handleMsgToBeShown} />
+              }
+            </Chatbox>
             :
-            <ChatContainer room={currentChat.room} chat={currentChat.chat} login={login} socket={socket} handleMsgToBeShown={handleMsgToBeShown} />
-          }
-        </Chatbox>
+            <Nogroup />
+        )
       }
     </div>
   );

@@ -92,7 +92,7 @@ body {
     }
 }
 
-@media (max-width: 735px) {
+@media (max-width: 770px) {
 
     /* Initially 600px */
     .menu-icon {
@@ -109,6 +109,7 @@ body {
         height: calc(100vh - 60px);
         transition: all 0.3s ease-in;
         overflow: hidden;
+        z-index: 500;
     }
 
     .nav-elements.active {
