@@ -6,11 +6,12 @@ const Message = require('../models/message');
 module.exports.getUsers = async (req, res) => {
     const currentUser = req.user.id;
     try {
-        // Getting all users from database
-        const allusers = await User.find({}).select('_id name');
         // Getting all contact rooms, so that we can send the unseen messages count
         User.findById(currentUser)
             .then(async user => {
+                // Getting all users from database
+                const othersGroup = (user.set === 'red') ? 'green' : 'red';
+                const allusers = await User.find({ set: othersGroup }).select('_id name');
                 let allrooms = user.rooms.map(room => {
                     return { other: room.other, unseen: room.unseen };
                 });

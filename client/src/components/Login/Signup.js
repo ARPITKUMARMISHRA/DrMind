@@ -9,12 +9,16 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
+import { Link as RouteLink } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+// Notifications
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const theme = createTheme();
@@ -65,6 +69,19 @@ export default function Signup() {
             setLogin(true);
             window.location.href = '/';
         } else {
+            res = await res.clone().json();
+            console.log(res);
+            if (res && res.msg)
+                toast.error(res.msg, {
+                    position: "top-center",
+                    autoClose: 1500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             console.log('Could not authenticate');
         }
     }
@@ -79,6 +96,7 @@ export default function Signup() {
 
     return (
         <ThemeProvider theme={theme}>
+            <ToastContainer />
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -148,12 +166,12 @@ export default function Signup() {
                                     autoComplete="new-password"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <FormControlLabel
                                     control={<Checkbox value="remember" color="primary" />}
                                     label="Remember me"
                                 />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                         {
                             shouldEnable()
@@ -182,9 +200,11 @@ export default function Signup() {
                         }
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/signin" variant="body2">
-                                    Already have an account? Sign in
-                                </Link>
+                                <RouteLink to="/signin">
+                                    <Link variant="body2">
+                                        Already have an account? Sign in
+                                    </Link>
+                                </RouteLink>
                             </Grid>
                         </Grid>
                     </Box>

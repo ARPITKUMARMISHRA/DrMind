@@ -25,7 +25,7 @@ function Suggestions({ percentage }) {
                             </div>
                         </div>
 
-                        <div className="services-list" style={{ marginTop: '0px' }}>
+                        <div className="services-list" style={{ marginTop: '0px', display: 'flex', justifyContent: 'space-evenly' }}>
 
 
 

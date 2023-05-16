@@ -8,6 +8,11 @@ import AuthContext from '../../contexts/auth/authContext';
 import './navbar.css'
 
 
+// Notifications
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 const Brand = () => {
     return (
         <NavLink to="/" className="brand">
@@ -40,6 +45,16 @@ const Navbar = () => {
         });
         if (res.status === 200) {
             setLogin(false);
+            toast.success('Logged Out', {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
             nav('/');
         } else {
             console.log('Could not logout');

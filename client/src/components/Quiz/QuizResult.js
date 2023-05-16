@@ -50,7 +50,6 @@ function QuizResult(props) {
         data = await data.clone().json();
         const login2 = new Object(login);
         login2.group = data.group;
-        console.log(login2);
         setLogin(login2);
       });
     }
@@ -73,12 +72,17 @@ function QuizResult(props) {
             {/* <Typography>Your Score:{props.score}</Typography>
         <Typography>Total Score:{props.totalScore}</Typography> */}
             <Typography mb={0.5}>Your Score: {percentage}%</Typography>
+            {(login) ?
+              <Typography mb={0.5}>Your Group: {(percentage >= 60) ? 'Green' : 'Red'}</Typography>
+              : null}
             <Typography>{message}</Typography>
           </Box>
           <Button variant='contained' id="next-button" onClick={props.tryAgain}>Try Again</Button>
         </Paper>
       </Container>
-      <Suggestions percentage />
+      {login ?
+        <Suggestions percentage />
+        : null}
     </>
   );
 }

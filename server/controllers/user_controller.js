@@ -8,22 +8,21 @@ module.exports.create = async function (req, res) {
     if (req.body.password != req.body.confirm_password) {
         console.log(`Passwords don't match`);
         // req.flash('error', 'Unmatched Passwords');
-        return res.status(400).json({});
+        return res.status(400).json({ msg: `Passwords don't match` });
     }
-
-    let validemail = await verifyEmail(req.body.email);
-    if (!validemail) {
-        return res.status(400).json({});
-    }
-    let validpass = await verifyPassword(req.body.password);
-    if (!validpass) {
-        return res.status(400).json({});
-    }
-
 
     User.findOne({ email: req.body.email })
         .then(async (user) => {
             if (!user) {
+
+                let validemail = await verifyEmail(req.body.email);
+                if (!validemail) {
+                    return res.status(400).json({ msg: 'Please enter a valid email' });
+                }
+                let validpass = await verifyPassword(req.body.password);
+                if (!validpass) {
+                    return res.status(400).json({ msg: 'Please use a strong password' });
+                }
                 // Creating the user
                 let newUser = new User();
                 newUser.name = req.body.name;
@@ -51,18 +50,18 @@ module.exports.create = async function (req, res) {
                     .catch((err) => {
                         // req.flash('error', 'Error while creating account');
                         console.log(`Error while creating user`, err);
-                        return res.status(500).json({});
+                        return res.status(500).json({ msg: 'Server error' });
                     });
             }
             else {
                 console.log(`Already a user`);
                 // req.flash('warning', 'Account already exists');
-                return res.status(409).json({});
+                return res.status(409).json({ msg: 'You have already registered' });
             }
         })
         .catch((err) => {
             console.log(`Error while finding user`);
-            return res.status(500).json({});
+            return res.status(500).json({ msg: 'Server error' });
         });
 }
 
@@ -72,12 +71,12 @@ module.exports.createSession = function (req, res) {
     User.findOne({ email: req.body.email })
         .then(async (user) => {
             if (!user) {
-                return res.status(401).json({});
+                return res.status(401).json({ msg: 'Invalid email/password' });
             }
             else {
                 let validPass = await bcrypt.compare(req.body.password, user.password);
                 if (!validPass)
-                    return res.status(401).json({});
+                    return res.status(401).json({ msg: 'Invalid email/password' });
                 // req.flash('warning', 'Account already exists');
                 const data = {
                     user: {
@@ -95,7 +94,7 @@ module.exports.createSession = function (req, res) {
         })
         .catch((err) => {
             console.log(`Error while finding user`);
-            return res.status(500).json({});
+            return res.status(500).json({ msg: 'Server error' });
         });
 }
 
@@ -105,7 +104,6 @@ module.exports.createSession = function (req, res) {
 
 // Email validation using an api from RapidAPI
 async function verifyEmail(email) {
-    return true;
     const encodedParams = new URLSearchParams();
     encodedParams.append("email", email);
 
@@ -140,7 +138,6 @@ async function verifyEmail(email) {
 
 // Password validation
 async function verifyPassword(password) {
-    return true;
     // 0=Too weak  ,  1=Weak  ,  2=Medium  ,  3=Strong
     console.log(passwordStrength(password));
     if (passwordStrength(password).id >= 1)

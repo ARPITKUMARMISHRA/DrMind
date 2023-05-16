@@ -13,14 +13,17 @@ import Loader from "../Loader";
 export default function Chat({ arrivedMsg }) {
   const [login, setLogin, socket] = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [rooms, setRooms] = useState([]);
-  const [onlineRooms, setOnlineRooms] = useState([]);
+  const [rooms, setRooms] = useState(undefined);
+  const [onlineRooms, setOnlineRooms] = useState(undefined);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [unseen, setUnseen] = useState(new Map());
 
   // Load users or when a new user joins
   useEffect(() => {
-    if (login && login.group !== '' && socket) {
+    if (login && login.group === '') {
+      setIsLoading(false);
+    }
+    else if (login && socket) {
       fetch(`${process.env.REACT_APP_SERVER_URL}/chat/getUsers`, {
         method: 'GET',
         headers: {

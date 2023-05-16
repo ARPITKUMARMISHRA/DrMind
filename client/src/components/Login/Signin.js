@@ -9,12 +9,16 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
+import { Link as RouteLink } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+// Notifications
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const theme = createTheme();
@@ -53,6 +57,18 @@ export default function Signin() {
       setLogin(true);
       window.location.href = '/';
     } else {
+      res = await res.clone().json();
+      if (res && res.msg)
+        toast.error(res.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       console.log('Could not authenticate');
     }
   }
@@ -66,6 +82,7 @@ export default function Signin() {
 
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -107,10 +124,10 @@ export default function Signin() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
+            /> */}
             {
               shouldEnable()
                 ?
@@ -142,9 +159,11 @@ export default function Signin() {
                 </Link>
               </Grid> */}
               <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+                <RouteLink to="/signup">
+                  <Link variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </RouteLink>
               </Grid>
             </Grid>
           </Box>

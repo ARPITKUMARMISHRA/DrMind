@@ -96,8 +96,9 @@ module.exports = (io) => {
                                     if (onlineUsers.has(to)) {
                                         // Sending message to destination when receiver is online
                                         const socketid = onlineUsers.get(to).socketid;
+                                        const fromName = onlineUsers.get(to).name;
                                         // console.log(socketid, message._id);
-                                        io.to(socketid).emit('receive-msg', { _id: message._id, from, msg, time });
+                                        io.to(socketid).emit('receive-msg', { _id: message._id, from, msg, time, fromName });
                                     }
                                     // Incrementing the number of unseen messages
                                     User.findById(to)

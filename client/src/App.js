@@ -41,10 +41,10 @@ function App() {
   // For the arrival of new message
   useEffect(() => {
     if (login && socket) {
-      socket.on('receive-msg', ({ _id, from, msg, time }) => {
+      socket.on('receive-msg', ({ _id, from, msg, time, fromName }) => {
         // When chat page is not open, show the notification
         if (!window.location.pathname.match('/chat')) {
-          chatNotification(msg);
+          chatNotification(`New message from '${fromName}'`);
         }
         // Setting the new arrived msg, so that <Chat/> can access it
         setArrivedMsg({ _id, from, msg, time });
@@ -55,7 +55,16 @@ function App() {
 
   // For showing the notification of new message
   const chatNotification = (msg) => {
-    toast.info(msg);
+    toast.info(msg, {
+      position: "bottom-left",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
 
   return (

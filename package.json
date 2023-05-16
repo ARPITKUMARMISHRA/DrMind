@@ -9,6 +9,7 @@
   "author": "ayush arsalan arpit",
   "license": "ISC",
   "dependencies": {
+    "mongodb": "^2.2.12",
     "vite": "^4.3.1"
   }
 }
