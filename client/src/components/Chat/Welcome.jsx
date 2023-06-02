@@ -1,7 +1,6 @@
 import { React, useState, useEffect } from "react";
 import styled from "styled-components";
 
-import doc from "../../../public/assets/images/doc.gif";
 
 export default function Welcome({ name }) {
   const [userName, setUserName] = useState("");
@@ -12,7 +11,7 @@ export default function Welcome({ name }) {
 
   return (
     <Welcomebox>
-      <img src={doc} alt="Doctor Image" />
+      <img src="assets/images/doc.gif" alt="Doctor" />
       <br />
       <h1>
         Welcome, <span>{userName}!</span>
