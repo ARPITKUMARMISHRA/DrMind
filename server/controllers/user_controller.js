@@ -155,6 +155,7 @@ async function verifyPassword(password) {
 
 // Check if user still exists or not
 module.exports.exists = async (req, res) => {
+    console.log(res.cookies);
     const token = req.cookies['auth-token'];
     if (!token) {
         return res.status(401).json({});
