@@ -44,7 +44,9 @@ module.exports.create = async function (req, res) {
                             }
                         };
                         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
-                        res.cookie('auth-token', authtoken);
+                        res.cookie('auth-token', authtoken, {
+                            secure: true
+                        });
                         return res.status(200).json({});
                     })
                     .catch((err) => {
@@ -171,16 +173,22 @@ module.exports.exists = async (req, res) => {
                 return res.status(200).json(data);
             }
             else {
-                res.cookie('auth-token', '', { expires: Date.now() });
+                res.cookie('auth-token', '', { expires: Date.now() }, {
+                    secure: true
+                });
                 return res.status(403).json({});
             }
         }
         else {
-            res.cookie('auth-token', '', { expires: Date.now() });
+            res.cookie('auth-token', '', { expires: Date.now() }, {
+                secure: true
+            });
             return res.status(403).json({});
         }
     } catch (err) {
-        res.cookie('auth-token', '', { expires: new Date() });
+        res.cookie('auth-token', '', { expires: new Date() }, {
+            secure: true
+        });
         res.status(500).json({});
     }
 }
@@ -188,7 +196,9 @@ module.exports.exists = async (req, res) => {
 
 module.exports.logout = async (req, res) => {
     try {
-        res.cookie('auth-token', '', { expires: new Date() });
+        res.cookie('auth-token', '', { expires: new Date() }, {
+            secure: true
+        });
         return res.status(200).json({});
     } catch (err) {
         res.status(500).json({});
