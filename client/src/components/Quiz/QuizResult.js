@@ -81,7 +81,7 @@ function QuizResult(props) {
         </Paper>
       </Container>
       {login ?
-        <Suggestions percentage />
+        <Suggestions percentage={percentage} />
         : null}
     </>
   );

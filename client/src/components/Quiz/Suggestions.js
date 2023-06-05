@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import './suggestions.css';
 
 function Suggestions({ percentage }) {
+    percentage = Number.parseInt(percentage);
     return (
         <Container component='main' style={{ width: '100%', minWidth: '100px', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'center' }}>
             <section className="sc-services" id='sc-services2'>
