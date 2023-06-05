@@ -48,7 +48,7 @@ module.exports.create = async function (req, res) {
                             secure: true,
                             sameSite: 'None',
                             httpOnly: true,
-                            domain: 'dr-mind.onrender.com'
+                            domain: process.env.COOKIE_DOMAIN
                         });
                         return res.status(200).json({});
                     })
@@ -97,7 +97,7 @@ module.exports.createSession = function (req, res) {
                     secure: true,
                     sameSite: 'None',
                     httpOnly: true,
-                    domain: 'dr-mind.onrender.com'
+                    domain: process.env.COOKIE_DOMAIN
                 });
                 return res.status(200).json({});
             }
@@ -185,7 +185,7 @@ module.exports.exists = async (req, res) => {
                     secure: true,
                     sameSite: 'None',
                     httpOnly: true,
-                    domain: 'dr-mind.onrender.com'
+                    domain: process.env.COOKIE_DOMAIN
                 });
                 return res.status(403).json({});
             }
@@ -195,7 +195,7 @@ module.exports.exists = async (req, res) => {
                 secure: true,
                 sameSite: 'None',
                 httpOnly: true,
-                domain: 'dr-mind.onrender.com'
+                domain: process.env.COOKIE_DOMAIN
             });
             return res.status(403).json({});
         }
@@ -204,7 +204,7 @@ module.exports.exists = async (req, res) => {
             secure: true,
             sameSite: 'None',
             httpOnly: true,
-            domain: 'dr-mind.onrender.com'
+            domain: process.env.COOKIE_DOMAIN
         });
         res.status(500).json({});
     }
@@ -217,7 +217,7 @@ module.exports.logout = async (req, res) => {
             secure: true,
             sameSite: 'None',
             httpOnly: true,
-            domain: 'dr-mind.onrender.com'
+            domain: process.env.COOKIE_DOMAIN
         });
         return res.status(200).json({});
     } catch (err) {
