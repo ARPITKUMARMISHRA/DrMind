@@ -54,10 +54,8 @@ export default function Signin() {
       credentials: 'include'
     });
     if (res.status === 200) {
-      // setLogin(true);
-      // window.location.href = '/';
-      // window.open(window.location.href, "_blank");
-      console.log('Got login response');
+      setLogin(true);
+      window.location.href = '/';
     } else {
       res = await res.clone().json();
       if (res && res.msg)

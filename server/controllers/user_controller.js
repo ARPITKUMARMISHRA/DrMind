@@ -48,7 +48,7 @@ module.exports.create = async function (req, res) {
                             secure: true,
                             sameSite: 'None',
                             httpOnly: true,
-                            domain: 'dr-mind-client.onrender.com'
+                            domain: 'dr-mind.onrender.com'
                         });
                         return res.status(200).json({});
                     })
@@ -160,7 +160,6 @@ async function verifyPassword(password) {
 
 // Check if user still exists or not
 module.exports.exists = async (req, res) => {
-    console.log(res.cookies);
     const token = req.cookies['auth-token'];
     if (!token) {
         return res.status(401).json({});
@@ -186,7 +185,7 @@ module.exports.exists = async (req, res) => {
                     secure: true,
                     sameSite: 'None',
                     httpOnly: true,
-                    domain: 'dr-mind-client.onrender.com'
+                    domain: 'dr-mind.onrender.com'
                 });
                 return res.status(403).json({});
             }
@@ -196,7 +195,7 @@ module.exports.exists = async (req, res) => {
                 secure: true,
                 sameSite: 'None',
                 httpOnly: true,
-                domain: 'dr-mind-client.onrender.com'
+                domain: 'dr-mind.onrender.com'
             });
             return res.status(403).json({});
         }
@@ -205,7 +204,7 @@ module.exports.exists = async (req, res) => {
             secure: true,
             sameSite: 'None',
             httpOnly: true,
-            domain: 'dr-mind-client.onrender.com'
+            domain: 'dr-mind.onrender.com'
         });
         res.status(500).json({});
     }
@@ -218,7 +217,7 @@ module.exports.logout = async (req, res) => {
             secure: true,
             sameSite: 'None',
             httpOnly: true,
-            domain: 'dr-mind-client.onrender.com'
+            domain: 'dr-mind.onrender.com'
         });
         return res.status(200).json({});
     } catch (err) {
