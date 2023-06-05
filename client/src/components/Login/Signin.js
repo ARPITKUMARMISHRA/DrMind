@@ -55,7 +55,8 @@ export default function Signin() {
     });
     if (res.status === 200) {
       setLogin(true);
-      window.location.href = '/';
+      // window.location.href = '/';
+      window.open(window.location.href, "_blank");
     } else {
       res = await res.clone().json();
       if (res && res.msg)
