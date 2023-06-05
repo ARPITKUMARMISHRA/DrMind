@@ -48,7 +48,7 @@ module.exports.create = async function (req, res) {
                             secure: true,
                             sameSite: 'None',
                             httpOnly: true,
-                            domain: '.onrender.com'
+                            domain: 'dr-mind-client.onrender.com'
                         });
                         return res.status(200).json({});
                     })
@@ -93,7 +93,12 @@ module.exports.createSession = function (req, res) {
                     }
                 };
                 const authtoken = jwt.sign(data, process.env.JWT_SECRET);
-                res.cookie('auth-token', authtoken);
+                res.cookie('auth-token', authtoken, {
+                    secure: true,
+                    sameSite: 'None',
+                    httpOnly: true,
+                    domain: 'dr-mind-client.onrender.com'
+                });
                 return res.status(200).json({});
             }
         })
@@ -181,7 +186,7 @@ module.exports.exists = async (req, res) => {
                     secure: true,
                     sameSite: 'None',
                     httpOnly: true,
-                    domain: '.onrender.com'
+                    domain: 'dr-mind-client.onrender.com'
                 });
                 return res.status(403).json({});
             }
@@ -191,7 +196,7 @@ module.exports.exists = async (req, res) => {
                 secure: true,
                 sameSite: 'None',
                 httpOnly: true,
-                domain: '.onrender.com'
+                domain: 'dr-mind-client.onrender.com'
             });
             return res.status(403).json({});
         }
@@ -200,7 +205,7 @@ module.exports.exists = async (req, res) => {
             secure: true,
             sameSite: 'None',
             httpOnly: true,
-            domain: '.onrender.com'
+            domain: 'dr-mind-client.onrender.com'
         });
         res.status(500).json({});
     }
@@ -213,7 +218,7 @@ module.exports.logout = async (req, res) => {
             secure: true,
             sameSite: 'None',
             httpOnly: true,
-            domain: '.onrender.com'
+            domain: 'dr-mind-client.onrender.com'
         });
         return res.status(200).json({});
     } catch (err) {
