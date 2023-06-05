@@ -45,7 +45,10 @@ module.exports.create = async function (req, res) {
                         };
                         const authtoken = jwt.sign(data, process.env.JWT_SECRET);
                         res.cookie('auth-token', authtoken, {
-                            secure: true
+                            secure: true,
+                            sameSite: 'None',
+                            httpOnly: true,
+                            domain: '.onrender.com'
                         });
                         return res.status(200).json({});
                     })
@@ -174,20 +177,29 @@ module.exports.exists = async (req, res) => {
             }
             else {
                 res.cookie('auth-token', '', { expires: Date.now() }, {
-                    secure: true
+                    secure: true,
+                    sameSite: 'None',
+                    httpOnly: true,
+                    domain: '.onrender.com'
                 });
                 return res.status(403).json({});
             }
         }
         else {
             res.cookie('auth-token', '', { expires: Date.now() }, {
-                secure: true
+                secure: true,
+                sameSite: 'None',
+                httpOnly: true,
+                domain: '.onrender.com'
             });
             return res.status(403).json({});
         }
     } catch (err) {
         res.cookie('auth-token', '', { expires: new Date() }, {
-            secure: true
+            secure: true,
+            sameSite: 'None',
+            httpOnly: true,
+            domain: '.onrender.com'
         });
         res.status(500).json({});
     }
@@ -197,7 +209,10 @@ module.exports.exists = async (req, res) => {
 module.exports.logout = async (req, res) => {
     try {
         res.cookie('auth-token', '', { expires: new Date() }, {
-            secure: true
+            secure: true,
+            sameSite: 'None',
+            httpOnly: true,
+            domain: '.onrender.com'
         });
         return res.status(200).json({});
     } catch (err) {
