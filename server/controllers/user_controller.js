@@ -97,7 +97,7 @@ module.exports.createSession = function (req, res) {
                     secure: true,
                     sameSite: 'None',
                     httpOnly: true,
-                    domain: 'onrender.com'
+                    domain: 'dr-mind.onrender.com'
                 });
                 return res.status(200).json({});
             }
